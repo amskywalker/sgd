@@ -29,4 +29,9 @@ public class Installment {
     @ManyToOne(optional = false)
     @JoinColumn(name = "installment_plan_id", nullable = false)
     private InstallmentPlan installmentPlan;
+
+    @PrePersist
+    protected void onCreate() {
+        dateCreated = LocalDateTime.now();
+    }
 }

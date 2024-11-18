@@ -32,4 +32,9 @@ public class InstallmentPlan {
 
     @OneToMany(mappedBy = "installmentPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Installment> installments;
+
+    @PrePersist
+    protected void onCreate() {
+        dateCreated = LocalDateTime.now();
+    }
 }
