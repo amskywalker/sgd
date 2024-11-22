@@ -14,12 +14,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Autowired
-    public UserService(UserRepository userRepository, AccountService accountService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, AccountService accountService, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.accountService = accountService;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -31,5 +33,15 @@ public class UserService {
         User createdUser = userRepository.save(user);
         accountService.save(AccountRequestData.builder().user(user).build());
         return createdUser;
+    }
+
+//    @TODO Return an exception
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
+    public User findByToken(String token) {
+        String username = jwtService.extractUsername(token);
+        return findByUsername(username);
     }
 }
