@@ -18,7 +18,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final AccountService accountService;
-    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
     @Autowired
@@ -26,7 +25,6 @@ public class UserService {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.accountService = accountService;
-        this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 
