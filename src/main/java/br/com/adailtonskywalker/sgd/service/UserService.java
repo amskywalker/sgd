@@ -9,7 +9,6 @@ import br.com.adailtonskywalker.sgd.model.User;
 import br.com.adailtonskywalker.sgd.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -21,7 +20,7 @@ public class UserService {
     private final JwtService jwtService;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, AccountService accountService, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, AccountService accountService, JwtService jwtService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.accountService = accountService;
