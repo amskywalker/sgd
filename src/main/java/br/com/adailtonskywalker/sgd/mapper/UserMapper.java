@@ -1,6 +1,6 @@
 package br.com.adailtonskywalker.sgd.mapper;
 
-import br.com.adailtonskywalker.sgd.Mapper;
+import br.com.adailtonskywalker.sgd.interfaces.Mapper;
 import br.com.adailtonskywalker.sgd.dto.UserRequestData;
 import br.com.adailtonskywalker.sgd.dto.UserResponseData;
 import br.com.adailtonskywalker.sgd.model.User;

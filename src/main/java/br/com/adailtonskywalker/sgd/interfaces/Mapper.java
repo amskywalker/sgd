@@ -1,4 +1,4 @@
-package br.com.adailtonskywalker.sgd;
+package br.com.adailtonskywalker.sgd.interfaces;
 
 /**
  * Generic interface for mapping between an Entity, an Input DTO, and an Output DTO.
