@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
@@ -26,15 +28,20 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
+//  @TODO create AccountNotFoundException
     @Transactional
-    public void updateBalance(Account account) {
+    public Account updateBalance(UUID accountUuid) {
+        Account account = accountRepository.findById(accountUuid).orElse(null);
+        assert account != null;
         double balance = account.getTransactions().stream()
+                .filter(transaction -> transaction.getOnBalance() == false)
                 .mapToDouble(transaction -> {
                     double amount;
                     if (transaction.getInstallmentPlan() == null) {
                         amount = transaction.getType() == TransactionType.INPUT
                                 ? +transaction.getAmount()
                                 : -transaction.getAmount();
+
                     } else {
                         amount =- installmentService.getCurrentInstallment(transaction.getInstallmentPlan()).getAmount();
                     }
@@ -43,6 +50,6 @@ public class AccountService {
                 .sum();
 
         account.setBalance((float) balance);
-        accountRepository.save(account);
+        return accountRepository.save(account);
     }
 }

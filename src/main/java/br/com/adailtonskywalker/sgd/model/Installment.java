@@ -1,14 +1,17 @@
 package br.com.adailtonskywalker.sgd.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "installments")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Installment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,4 +32,9 @@ public class Installment {
     @ManyToOne(optional = false)
     @JoinColumn(name = "installment_plan_id", nullable = false)
     private InstallmentPlan installmentPlan;
+
+    @PrePersist
+    protected void onCreate() {
+        dateCreated = LocalDateTime.now();
+    }
 }

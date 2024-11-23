@@ -15,5 +15,4 @@ public class UserRequestData {
     @NotNull
     @Size(min = 8, max = 15)
     private String password;
-
 }

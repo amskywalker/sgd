@@ -1,7 +1,7 @@
 package br.com.adailtonskywalker.sgd.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +9,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "installment_plan")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class InstallmentPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,4 +35,9 @@ public class InstallmentPlan {
 
     @OneToMany(mappedBy = "installmentPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Installment> installments;
+
+    @PrePersist
+    protected void onCreate() {
+        dateCreated = LocalDateTime.now();
+    }
 }
