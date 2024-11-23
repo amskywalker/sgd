@@ -32,6 +32,8 @@ public class Transaction {
     @Column(nullable = false)
     private LocalDateTime dateCreated;
 
+    private Boolean onBalance = false;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
@@ -41,6 +43,7 @@ public class Transaction {
 
     @PrePersist
     protected void onCreate() {
+        date = date == null ? LocalDateTime.now() : date;
         dateCreated = LocalDateTime.now();
     }
 }
