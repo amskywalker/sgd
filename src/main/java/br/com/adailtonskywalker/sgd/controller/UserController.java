@@ -1,6 +1,5 @@
 package br.com.adailtonskywalker.sgd.controller;
 
-import br.com.adailtonskywalker.sgd.dto.MeRequestData;
 import br.com.adailtonskywalker.sgd.dto.UserRequestData;
 import br.com.adailtonskywalker.sgd.dto.UserResponseData;
 import br.com.adailtonskywalker.sgd.service.UserService;
@@ -21,8 +20,14 @@ public class UserController {
         return userService.save(userData);
     }
 
+
     @GetMapping("/me")
-    public UserResponseData me(@Valid @RequestBody MeRequestData meRequestData) {
-        return userService.findByToken(meRequestData);
+    public UserResponseData me(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Token inválido ou ausente");
+        }
+
+        String token = authHeader.substring(7);
+        return userService.findByToken(token);
     }
 }
