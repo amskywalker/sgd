@@ -22,4 +22,6 @@ public class TransactionRequestData {
     private Float amount;
     @NotNull
     private String accountUuid;
+
+    private Boolean onBalance;
 }
