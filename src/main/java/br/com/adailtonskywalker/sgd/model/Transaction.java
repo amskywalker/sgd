@@ -1,5 +1,6 @@
 package br.com.adailtonskywalker.sgd.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,7 @@ public class Transaction {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonIgnore
     private Account account;
 
     @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
