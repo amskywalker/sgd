@@ -5,32 +5,27 @@ import br.com.adailtonskywalker.sgd.dto.MeRequestData;
 import br.com.adailtonskywalker.sgd.dto.UserRequestData;
 import br.com.adailtonskywalker.sgd.dto.UserResponseData;
 import br.com.adailtonskywalker.sgd.mapper.UserMapper;
+import br.com.adailtonskywalker.sgd.messaging.EventQueue;
 import br.com.adailtonskywalker.sgd.model.User;
 import br.com.adailtonskywalker.sgd.repository.UserRepository;
+import br.com.adailtonskywalker.sgd.sender.Sender;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
+    private final Sender sender;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final AccountService accountService;
     private final JwtService jwtService;
-
-    @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, AccountService accountService, JwtService jwtService) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.accountService = accountService;
-        this.jwtService = jwtService;
-    }
 
     public UserResponseData save(UserRequestData userRequestData) {
         User user = userMapper.toEntity(userRequestData);
         User createdUser = userRepository.save(user);
-        accountService.save(AccountRequestData.builder().user(user).build());
+        sender.sendMessage(EventQueue.USER_CREATED, createdUser);
         return userMapper.toDto(createdUser);
     }
 
