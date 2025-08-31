@@ -1,7 +1,5 @@
 package br.com.adailtonskywalker.sgd.service;
 
-import br.com.adailtonskywalker.sgd.dto.AccountRequestData;
-import br.com.adailtonskywalker.sgd.dto.MeRequestData;
 import br.com.adailtonskywalker.sgd.dto.UserRequestData;
 import br.com.adailtonskywalker.sgd.dto.UserResponseData;
 import br.com.adailtonskywalker.sgd.mapper.UserMapper;
@@ -36,8 +34,8 @@ public class UserService {
         return userMapper.toDto(foundedUser);
     }
 
-    public UserResponseData findByToken(MeRequestData meRequestData) {
-        String username = jwtService.extractUsername(meRequestData.getToken());
+    public UserResponseData findByToken(String token) {
+        String username = jwtService.extractUsername(token);
         return findByUsername(username);
     }
 }
