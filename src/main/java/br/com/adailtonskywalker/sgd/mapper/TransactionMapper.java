@@ -44,4 +44,23 @@ public class TransactionMapper implements Mapper<Transaction, TransactionRequest
                 .account(accountMapper.toDto(entity.getAccount()))
                 .build();
     }
+
+    public void updateEntityFromDto(TransactionRequestData dto, Transaction entity) {
+        if (dto.getAmount() != null) {
+            entity.setAmount(dto.getAmount());
+        }
+        if (dto.getDescription() != null) {
+            entity.setDescription(dto.getDescription());
+        }
+        if (dto.getType() != null) {
+            entity.setType(dto.getType());
+        }
+        if (dto.getDate() != null) {
+            entity.setDate(dto.getDate());
+        }
+
+        if (dto.getOnBalance() != null) {
+            entity.setOnBalance(dto.getOnBalance());
+        }
+    }
 }
