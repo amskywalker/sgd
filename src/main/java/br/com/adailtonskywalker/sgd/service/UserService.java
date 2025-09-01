@@ -2,6 +2,7 @@ package br.com.adailtonskywalker.sgd.service;
 
 import br.com.adailtonskywalker.sgd.dto.UserRequestData;
 import br.com.adailtonskywalker.sgd.dto.UserResponseData;
+import br.com.adailtonskywalker.sgd.exception.EntityExistsException;
 import br.com.adailtonskywalker.sgd.mapper.UserMapper;
 import br.com.adailtonskywalker.sgd.messaging.EventQueue;
 import br.com.adailtonskywalker.sgd.model.User;
@@ -22,6 +23,9 @@ public class UserService {
 
     public UserResponseData save(UserRequestData userRequestData) {
         User user = userMapper.toEntity(userRequestData);
+        if (userRepository.existsByUsername(user.getUsername())){
+            throw new EntityExistsException("User");
+        }
         User createdUser = userRepository.save(user);
         sender.sendMessage(EventQueue.USER_CREATED, createdUser);
         return userMapper.toDto(createdUser);
