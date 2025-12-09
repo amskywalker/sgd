@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -36,9 +37,12 @@ public class TransactionService {
         HttpServletRequest request = attrs.getRequest();
         String token = request.getHeader("Authorization").substring(7);
         UserResponseData userResponseData = userService.findByToken(token);
-        if (!userResponseData.getAccount().getId().equals(transactionRequestData.getAccountUuid())) {
+        UUID convertedUUID = UUID.fromString(transactionRequestData.getAccountUuid().trim());
+
+        if (!Objects.equals(userResponseData.getAccount().getId(), convertedUUID)) {
             throw new UnauthorizedActionException();
         }
+
         Transaction transaction = transactionMapper.toEntity(transactionRequestData);
         if(!accountService.existsById(UUID.fromString(transactionRequestData.getAccountUuid()))){
             throw new EntityNotFoundException("Account");
