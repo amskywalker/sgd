@@ -5,6 +5,7 @@ import br.com.adailtonskywalker.sgd.dto.BadRequestResponse;
 import br.com.adailtonskywalker.sgd.dto.ErrorRequestResponse;
 import br.com.adailtonskywalker.sgd.exception.EntityExistsException;
 import br.com.adailtonskywalker.sgd.exception.EntityNotFoundException;
+import br.com.adailtonskywalker.sgd.exception.UnauthorizedActionException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,16 @@ public class GlobalExceptionHandler {
                 .body(ErrorRequestResponse.builder()
                         .description(exception.getMessage())
                         .status((short) HttpStatus.UNAUTHORIZED.value())
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(UnauthorizedActionException.class)
+    public ResponseEntity<ErrorRequestResponse> handleException(UnauthorizedActionException exception) {
+        return ResponseEntity.status(exception.getStatus())
+                .body(ErrorRequestResponse.builder()
+                        .description(exception.getMessage())
+                        .status(exception.getStatus())
                         .build()
                 );
     }
