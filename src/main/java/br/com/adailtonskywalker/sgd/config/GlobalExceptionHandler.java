@@ -5,6 +5,7 @@ import br.com.adailtonskywalker.sgd.dto.BadRequestResponse;
 import br.com.adailtonskywalker.sgd.dto.ErrorRequestResponse;
 import br.com.adailtonskywalker.sgd.exception.EntityExistsException;
 import br.com.adailtonskywalker.sgd.exception.EntityNotFoundException;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,10 +63,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorRequestResponse> handleException(BadCredentialsException ignored) {
+    public ResponseEntity<ErrorRequestResponse> handleException(BadCredentialsException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ErrorRequestResponse.builder()
-                        .description(ignored.getMessage())
+                        .description(exception.getMessage())
+                        .status((short) HttpStatus.UNAUTHORIZED.value())
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorRequestResponse> handleException(ExpiredJwtException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorRequestResponse.builder()
+                        .description(exception.getMessage())
                         .status((short) HttpStatus.UNAUTHORIZED.value())
                         .build()
                 );
