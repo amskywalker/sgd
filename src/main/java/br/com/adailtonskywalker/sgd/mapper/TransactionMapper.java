@@ -7,7 +7,9 @@ import br.com.adailtonskywalker.sgd.model.Account;
 import br.com.adailtonskywalker.sgd.model.Transaction;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class TransactionMapper implements Mapper<Transaction, TransactionRequestData, TransactionResponseData> {
@@ -16,6 +18,16 @@ public class TransactionMapper implements Mapper<Transaction, TransactionRequest
 
     public TransactionMapper(AccountMapper accountMapper) {
         this.accountMapper = accountMapper;
+    }
+
+    public List<TransactionResponseData> toDtoList(List<Transaction> dtoList) {
+        if (dtoList == null) {
+            return List.of();
+        }
+
+        return dtoList.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

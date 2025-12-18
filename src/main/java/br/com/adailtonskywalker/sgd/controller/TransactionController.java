@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/transactions")
@@ -20,6 +22,19 @@ public class TransactionController {
     @Autowired
     public TransactionController(TransactionService service) {
         this.service = service;
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<SuccessRequestResponse> index() {
+        List<TransactionResponseData> responseData = service.index();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                SuccessRequestResponse
+                        .builder()
+                        .data(responseData)
+                        .status(HttpStatus.OK.value())
+                        .build()
+        );
     }
 
     @PostMapping("/")
@@ -34,4 +49,6 @@ public class TransactionController {
                         .build()
         );
     }
+
+
 }

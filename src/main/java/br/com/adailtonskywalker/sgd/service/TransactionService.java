@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -59,5 +60,11 @@ public class TransactionService {
         transactionMapper.updateEntityFromDto(transactionRequestData, transaction);
         Transaction savedTransaction = transactionRepository.save(transaction);
         return transactionMapper.toDto(savedTransaction);
+    }
+
+    public List<TransactionResponseData> index() {
+        List<Transaction> transactions = transactionRepository.findAll();
+        return transactionMapper.toDtoList(transactions);
+
     }
 }
