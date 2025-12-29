@@ -16,8 +16,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @ControllerAdvice
@@ -35,7 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorRequestResponse> handleException(EntityNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(ErrorRequestResponse.builder()
                     .description(exception.getMessage())
                     .status(exception.getStatus())
@@ -113,5 +115,18 @@ public class GlobalExceptionHandler {
                     .errors(errors)
                     .build()
             );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> handleUUIDError(MethodArgumentTypeMismatchException ex) {
+        if (ex.getRequiredType() == UUID.class) {
+            return ResponseEntity.badRequest().body(
+                    ErrorRequestResponse.builder()
+                            .status((short) HttpStatus.BAD_REQUEST.value())
+                            .description("Invalid UUID")
+                            .build()
+            );
+        }
+        throw ex;
     }
 }

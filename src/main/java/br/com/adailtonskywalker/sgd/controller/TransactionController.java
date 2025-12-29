@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -27,6 +28,19 @@ public class TransactionController {
     @GetMapping("/")
     public ResponseEntity<SuccessRequestResponse> index() {
         List<TransactionResponseData> responseData = service.index();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                SuccessRequestResponse
+                        .builder()
+                        .data(responseData)
+                        .status(HttpStatus.OK.value())
+                        .build()
+        );
+    }
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<SuccessRequestResponse> getById(@PathVariable UUID uuid) {
+        TransactionResponseData responseData = service.getByUUID(uuid);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 SuccessRequestResponse

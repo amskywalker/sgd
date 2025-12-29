@@ -65,6 +65,23 @@ public class TransactionService {
     public List<TransactionResponseData> index() {
         List<Transaction> transactions = transactionRepository.findAll();
         return transactionMapper.toDtoList(transactions);
+    }
 
+    public TransactionResponseData getByUUID(UUID uuid) {
+
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attrs.getRequest();
+        String token = request.getHeader("Authorization").substring(7);
+        UserResponseData userResponseData = userService.findByToken(token);
+
+        Transaction transaction = transactionRepository.findById(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("Transaction"));
+
+        if (!Objects.equals(transaction.getAccount().getId(), userResponseData.getAccount().getId())) {
+            throw new UnauthorizedActionException();
+        }
+
+
+        return transactionMapper.toDto(transaction);
     }
 }
