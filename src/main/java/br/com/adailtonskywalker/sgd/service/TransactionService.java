@@ -63,7 +63,12 @@ public class TransactionService {
     }
 
     public List<TransactionResponseData> index() {
-        List<Transaction> transactions = transactionRepository.findAll();
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attrs.getRequest();
+        String token = request.getHeader("Authorization").substring(7);
+        UserResponseData userResponseData = userService.findByToken(token);
+
+        List<Transaction> transactions = transactionRepository.findAllByAccountId(userResponseData.getAccount().getId());
         return transactionMapper.toDtoList(transactions);
     }
 
