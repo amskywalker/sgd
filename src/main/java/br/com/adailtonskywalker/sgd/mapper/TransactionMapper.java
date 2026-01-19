@@ -3,12 +3,10 @@ package br.com.adailtonskywalker.sgd.mapper;
 import br.com.adailtonskywalker.sgd.dto.TransactionRequestData;
 import br.com.adailtonskywalker.sgd.dto.TransactionResponseData;
 import br.com.adailtonskywalker.sgd.interfaces.Mapper;
-import br.com.adailtonskywalker.sgd.model.Account;
 import br.com.adailtonskywalker.sgd.model.Transaction;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,10 +35,6 @@ public class TransactionMapper implements Mapper<Transaction, TransactionRequest
         transaction.setDescription(inputDto.getDescription());
         transaction.setType(inputDto.getType());
         transaction.setDate(inputDto.getDate());
-
-        Account account = new Account();
-        account.setId(UUID.fromString(inputDto.getAccountUuid()));
-        transaction.setAccount(account);
 
         return transaction;
     }

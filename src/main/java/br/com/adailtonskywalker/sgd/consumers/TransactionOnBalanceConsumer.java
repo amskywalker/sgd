@@ -1,6 +1,5 @@
 package br.com.adailtonskywalker.sgd.consumers;
 
-import br.com.adailtonskywalker.sgd.dto.TransactionRequestData;
 import br.com.adailtonskywalker.sgd.dto.TransactionResponseData;
 import br.com.adailtonskywalker.sgd.messaging.Queues;
 import br.com.adailtonskywalker.sgd.service.TransactionService;
@@ -18,6 +17,6 @@ public class TransactionOnBalanceConsumer {
     @RabbitListener(queues = Queues.TRANSACTION_ON_BALANCE)
     public void consume(TransactionResponseData transaction) {
         log.info("Transaction on balance: {}", transaction);
-        transactionService.update(transaction.getId(), TransactionRequestData.builder().onBalance(true).build());
+        transactionService.markOnBalance(transaction.getId());
     }
 }

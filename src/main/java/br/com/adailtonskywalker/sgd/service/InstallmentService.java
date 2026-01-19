@@ -45,7 +45,7 @@ public class InstallmentService {
 
     @Transactional
     public float calculateInstallmentValue(InstallmentPlan installmentPlan) {
-        return installmentPlan.getValue() / installmentPlan.getQuantity();
+        return installmentPlan.getAmount() / installmentPlan.getQuantity();
     }
 
     @Transactional

@@ -22,7 +22,7 @@ public class InstallmentPlanService {
     public InstallmentPlan save(InstallmentPlanRequestData installmentPlanRequestData) {
         InstallmentPlan installmentPlan = new InstallmentPlan();
         installmentPlan.setFees(installmentPlanRequestData.getFees());
-        installmentPlan.setValue(installmentPlanRequestData.getValue());
+        installmentPlan.setAmount(installmentPlanRequestData.getValue());
         installmentPlan.setQuantity(installmentPlan.getQuantity());
         installmentPlan.setTransaction(installmentPlanRequestData.getTransaction());
         installmentService.createByInstallmentPlan(installmentPlan);
