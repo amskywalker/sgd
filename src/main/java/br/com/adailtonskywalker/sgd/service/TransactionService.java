@@ -4,6 +4,7 @@ import br.com.adailtonskywalker.sgd.dto.TransactionRequestData;
 import br.com.adailtonskywalker.sgd.dto.TransactionResponseData;
 import br.com.adailtonskywalker.sgd.events.TransactionCreatedEvent;
 import br.com.adailtonskywalker.sgd.exception.EntityNotFoundException;
+import br.com.adailtonskywalker.sgd.exception.UnauthorizedActionException;
 import br.com.adailtonskywalker.sgd.mapper.TransactionMapper;
 import br.com.adailtonskywalker.sgd.model.Account;
 import br.com.adailtonskywalker.sgd.model.Transaction;
@@ -56,6 +57,11 @@ public class TransactionService {
         transactionRepository.save(transation);
     }
 
+    public Transaction getOwnedTransaction(Account account, UUID transactionId) {
+        return transactionRepository
+                .findByIdAndAccountId(transactionId, account.getId())
+                .orElseThrow(UnauthorizedActionException::new);
+    }
 
     public List<TransactionResponseData> index(Account account) {
         List<Transaction> transactions = transactionRepository.findAllByAccountId(account.getId());
