@@ -6,7 +6,8 @@ public enum EventQueue {
     USER_DELETED(Queues.USER_DELETED, "user.deleted", "direct.exchange"),
     ACCOUNT_CREATED(Queues.ACCOUNT_CREATED, "account.created", "direct.exchange"),
     TRANSACTION_CREATED(Queues.TRANSACTION_CREATED, "transaction.created", "direct.exchange"),
-    TRANSACTION_ON_BALANCE(Queues.TRANSACTION_ON_BALANCE, "transaction.on.balance", "direct.exchange");
+    TRANSACTION_ON_BALANCE(Queues.TRANSACTION_ON_BALANCE, "transaction.on.balance", "direct.exchange"),
+    INSTALLMENT_PLAN_CREATED(Queues.INSTALLMENT_PLAN_CREATED, "installment_plan.created", "direct.exchange");
 
     public final String queue;
     public final String routingKey;

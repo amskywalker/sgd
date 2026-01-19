@@ -1,31 +1,39 @@
 package br.com.adailtonskywalker.sgd.service;
 
 import br.com.adailtonskywalker.sgd.dto.InstallmentPlanRequestData;
+import br.com.adailtonskywalker.sgd.dto.InstallmentPlanResponseData;
+import br.com.adailtonskywalker.sgd.events.InstallmentPlanCreatedEvent;
+import br.com.adailtonskywalker.sgd.mapper.InstallmentPlanMapper;
+import br.com.adailtonskywalker.sgd.model.Account;
 import br.com.adailtonskywalker.sgd.model.InstallmentPlan;
+import br.com.adailtonskywalker.sgd.model.Transaction;
 import br.com.adailtonskywalker.sgd.repository.InstallmentPlanRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
+@RequiredArgsConstructor
+@Log
 public class InstallmentPlanService {
     private final InstallmentPlanRepository installmentPlanRepository;
-    private final InstallmentService installmentService;
-
-    @Autowired
-    public InstallmentPlanService(InstallmentPlanRepository installmentPlanRepository, InstallmentService installmentService) {
-        this.installmentPlanRepository = installmentPlanRepository;
-        this.installmentService = installmentService;
-    }
+    private final TransactionService transactionService;
+    private final InstallmentPlanMapper installmentPlanMapper;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
-    public InstallmentPlan save(InstallmentPlanRequestData installmentPlanRequestData) {
-        InstallmentPlan installmentPlan = new InstallmentPlan();
-        installmentPlan.setFees(installmentPlanRequestData.getFees());
-        installmentPlan.setAmount(installmentPlanRequestData.getValue());
-        installmentPlan.setQuantity(installmentPlan.getQuantity());
-        installmentPlan.setTransaction(installmentPlanRequestData.getTransaction());
-        installmentService.createByInstallmentPlan(installmentPlan);
-        return installmentPlanRepository.save(installmentPlan);
+    public InstallmentPlanResponseData save(Account account, UUID transactionId, InstallmentPlanRequestData installmentPlanRequestData) {
+        Transaction transaction = transactionService.getOwnedTransaction(account, transactionId);
+
+        InstallmentPlan installmentPlan = installmentPlanMapper.toEntity(installmentPlanRequestData);
+        installmentPlan.setTransaction(transaction);
+
+        InstallmentPlan savedInstallmentPlan = installmentPlanRepository.save(installmentPlan);
+        publisher.publishEvent(new InstallmentPlanCreatedEvent(savedInstallmentPlan));
+        return installmentPlanMapper.toDto(savedInstallmentPlan);
     }
 }

@@ -6,4 +6,5 @@ public class Queues {
     public static final String ACCOUNT_CREATED = "account.created.queue";
     public static final String TRANSACTION_CREATED = "transaction.created.queue";
     public static final String TRANSACTION_ON_BALANCE = "transaction.on.balance.queue";
+    public static final String INSTALLMENT_PLAN_CREATED = "installment_plan.created.queue";
 }
