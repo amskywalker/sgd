@@ -20,8 +20,5 @@ public class TransactionRequestData {
     private LocalDateTime date;
     @NotNull
     private Float amount;
-    @NotNull
-    private String accountUuid;
-
     private Boolean onBalance;
 }

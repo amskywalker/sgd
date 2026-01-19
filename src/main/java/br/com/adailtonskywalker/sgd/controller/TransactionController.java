@@ -3,12 +3,14 @@ package br.com.adailtonskywalker.sgd.controller;
 import br.com.adailtonskywalker.sgd.dto.SuccessRequestResponse;
 import br.com.adailtonskywalker.sgd.dto.TransactionRequestData;
 import br.com.adailtonskywalker.sgd.dto.TransactionResponseData;
+import br.com.adailtonskywalker.sgd.model.User;
 import br.com.adailtonskywalker.sgd.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,8 @@ public class TransactionController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<SuccessRequestResponse> index() {
-        List<TransactionResponseData> responseData = service.index();
+    public ResponseEntity<SuccessRequestResponse> index(@AuthenticationPrincipal User user) {
+        List<TransactionResponseData> responseData = service.index(user.getAccount());
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 SuccessRequestResponse
@@ -39,8 +41,9 @@ public class TransactionController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<SuccessRequestResponse> getById(@PathVariable UUID uuid) {
-        TransactionResponseData responseData = service.getByUUID(uuid);
+    public ResponseEntity<SuccessRequestResponse> getById(@PathVariable UUID uuid,
+                                                          @AuthenticationPrincipal User user) {
+        TransactionResponseData responseData = service.getByUUID(user.getAccount(), uuid);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 SuccessRequestResponse
@@ -52,8 +55,9 @@ public class TransactionController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<SuccessRequestResponse> save(@Valid @RequestBody TransactionRequestData requestData) {
-        TransactionResponseData responseData = service.save(requestData);
+    public ResponseEntity<SuccessRequestResponse> save(@Valid @RequestBody TransactionRequestData requestData,
+                                                       @AuthenticationPrincipal User user) {
+        TransactionResponseData responseData = service.save(user.getAccount(), requestData);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 SuccessRequestResponse

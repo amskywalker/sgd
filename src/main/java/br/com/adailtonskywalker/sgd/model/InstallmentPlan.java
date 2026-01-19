@@ -22,7 +22,7 @@ public class InstallmentPlan {
     private Integer quantity;
 
     @Column(nullable = false)
-    private Float value;
+    private Float amount;
 
     private Float fees = 0.F;
 
