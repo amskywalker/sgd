@@ -3,6 +3,7 @@ package br.com.adailtonskywalker.sgd.service;
 import br.com.adailtonskywalker.sgd.dto.InstallmentPlanRequestData;
 import br.com.adailtonskywalker.sgd.dto.InstallmentPlanResponseData;
 import br.com.adailtonskywalker.sgd.events.InstallmentPlanCreatedEvent;
+import br.com.adailtonskywalker.sgd.exception.EntityNotFoundException;
 import br.com.adailtonskywalker.sgd.mapper.InstallmentPlanMapper;
 import br.com.adailtonskywalker.sgd.model.Account;
 import br.com.adailtonskywalker.sgd.model.InstallmentPlan;
@@ -43,5 +44,11 @@ public class InstallmentPlanService {
         Transaction transaction = transactionService.getOwnedTransaction(account, transactionId);
         InstallmentPlan savedInstallmentPlan = installmentPlanRepository.findByTransactionId(transaction.getId());
         return installmentPlanMapper.toDto(savedInstallmentPlan);
+    }
+
+    @Transactional
+    public InstallmentPlan getById(Account account, UUID installmentPlanId) {
+        return installmentPlanRepository.findById(installmentPlanId)
+                .orElseThrow(() -> new EntityNotFoundException("InstallmentPlan"));
     }
 }
