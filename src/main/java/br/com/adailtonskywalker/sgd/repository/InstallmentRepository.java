@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface InstallmentRepository extends JpaRepository<Installment, UUID> {
@@ -18,4 +19,6 @@ public interface InstallmentRepository extends JpaRepository<Installment, UUID> 
             @Param("month") int month,
             @Param("year") int year
     );
+
+    Optional<List<Installment>> findByInstallmentPlanId(UUID installmentPlanId);
 }

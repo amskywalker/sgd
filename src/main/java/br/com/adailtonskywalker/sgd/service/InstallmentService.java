@@ -1,22 +1,36 @@
 package br.com.adailtonskywalker.sgd.service;
 
 import br.com.adailtonskywalker.sgd.dto.InstallmentRequestData;
+import br.com.adailtonskywalker.sgd.dto.InstallmentResponseData;
+import br.com.adailtonskywalker.sgd.exception.EntityNotFoundException;
+import br.com.adailtonskywalker.sgd.mapper.InstallmentMapper;
+import br.com.adailtonskywalker.sgd.model.Account;
 import br.com.adailtonskywalker.sgd.model.Installment;
 import br.com.adailtonskywalker.sgd.model.InstallmentPlan;
 import br.com.adailtonskywalker.sgd.repository.InstallmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class InstallmentService {
-    private final InstallmentRepository installmentRepository;
 
-    @Autowired
-    public InstallmentService(InstallmentRepository installmentRepository) {
-        this.installmentRepository = installmentRepository;
+    private final InstallmentRepository installmentRepository;
+    private final InstallmentPlanService installmentPlanService;
+    private final InstallmentMapper installmentMapper;
+
+    public List<InstallmentResponseData> getByInstallmentPlan(Account account, UUID installmentPlanId){
+        InstallmentPlan installmentPlan = installmentPlanService.getById(null, installmentPlanId);
+
+        List<Installment> installments = installmentRepository.findByInstallmentPlanId(installmentPlan.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Installment"));
+
+        return installmentMapper.toDtoList(installments);
     }
 
     @Transactional
