@@ -36,4 +36,12 @@ public class InstallmentPlanService {
         publisher.publishEvent(new InstallmentPlanCreatedEvent(savedInstallmentPlan));
         return installmentPlanMapper.toDto(savedInstallmentPlan);
     }
+
+
+    @Transactional
+    public InstallmentPlanResponseData getByTransactionID(Account account, UUID transactionId) {
+        Transaction transaction = transactionService.getOwnedTransaction(account, transactionId);
+        InstallmentPlan savedInstallmentPlan = installmentPlanRepository.findByTransactionId(transaction.getId());
+        return installmentPlanMapper.toDto(savedInstallmentPlan);
+    }
 }
