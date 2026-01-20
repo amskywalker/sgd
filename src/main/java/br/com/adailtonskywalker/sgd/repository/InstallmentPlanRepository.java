@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface InstallmentPlanRepository extends JpaRepository<InstallmentPlan, UUID> {
+
+    InstallmentPlan findByTransactionId(UUID transactionId);
 }

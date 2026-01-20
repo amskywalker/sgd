@@ -37,4 +37,19 @@ public class InstallmentPlanController {
                         .build()
         );
     }
+
+    @GetMapping("/{transactionId}")
+    public ResponseEntity<SuccessRequestResponse> getByTransactionId(@PathVariable UUID transactionId,
+                                                       @AuthenticationPrincipal User user) {
+
+        InstallmentPlanResponseData responseData = service.getByTransactionID(user.getAccount(), transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                SuccessRequestResponse
+                        .builder()
+                        .data(responseData)
+                        .status(HttpStatus.OK.value())
+                        .build()
+        );
+    }
 }
