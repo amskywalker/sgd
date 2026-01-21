@@ -12,12 +12,6 @@ import java.util.stream.Collectors;
 @Component
 public class TransactionMapper implements Mapper<Transaction, TransactionRequestData, TransactionResponseData> {
 
-    private final AccountMapper accountMapper;
-
-    public TransactionMapper(AccountMapper accountMapper) {
-        this.accountMapper = accountMapper;
-    }
-
     public List<TransactionResponseData> toDtoList(List<Transaction> dtoList) {
         if (dtoList == null) {
             return List.of();
@@ -47,7 +41,6 @@ public class TransactionMapper implements Mapper<Transaction, TransactionRequest
                 .description(entity.getDescription())
                 .type(entity.getType())
                 .date(entity.getDate())
-                .account(accountMapper.toDto(entity.getAccount()))
                 .build();
     }
 

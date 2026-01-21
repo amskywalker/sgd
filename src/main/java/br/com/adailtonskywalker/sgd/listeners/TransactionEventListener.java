@@ -19,7 +19,7 @@ public class TransactionEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onTransactionCreated(TransactionCreatedEvent event) {
-        sender.sendMessage(EventQueue.TRANSACTION_CREATED, transactionMapper.toDto(event.transaction()));
+        sender.sendMessage(EventQueue.TRANSACTION_CREATED, event);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

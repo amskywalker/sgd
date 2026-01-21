@@ -32,7 +32,7 @@ public class TransactionService {
         Transaction transaction = transactionMapper.toEntity(transactionRequestData);
         transaction.setAccount(account);
         Transaction savedTransaction = transactionRepository.save(transaction);
-        publisher.publishEvent(new TransactionCreatedEvent(savedTransaction));
+        publisher.publishEvent(new TransactionCreatedEvent(savedTransaction.getId(), account.getId(), savedTransaction.getAmount()));
         return transactionMapper.toDto(savedTransaction);
     }
 
