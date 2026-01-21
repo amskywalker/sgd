@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class UserResponseData {
     private Long id;
-    private String name;
+    private String name;                    
     private String username;
     private LocalDateTime dateCreated;
-    private AccountResponseData account;
 }

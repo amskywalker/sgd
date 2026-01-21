@@ -9,11 +9,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper implements Mapper<User, UserRequestData, UserResponseData> {
-    private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserMapper(AccountMapper accountMapper, PasswordEncoder passwordEncoder) {
-        this.accountMapper = accountMapper;
+    public UserMapper(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -33,7 +31,6 @@ public class UserMapper implements Mapper<User, UserRequestData, UserResponseDat
                 .username(entity.getUsername())
                 .name(entity.getName())
                 .dateCreated(entity.getDateCreated())
-                .account(entity.getAccount() != null ? accountMapper.toDto(entity.getAccount()) : null)
                 .build();
     }
 }
