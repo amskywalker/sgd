@@ -1,5 +1,5 @@
 package br.com.adailtonskywalker.sgd.events;
 
-import br.com.adailtonskywalker.sgd.model.Transaction;
+import java.util.UUID;
 
-public record TransactionCreatedEvent(Transaction transaction) {}
+public record TransactionCreatedEvent(UUID transactionId, UUID accountId, Float amount) {}

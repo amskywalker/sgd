@@ -15,5 +15,4 @@ public class TransactionResponseData {
     private String description;
     private LocalDateTime date;
     private Float amount;
-    private AccountResponseData account;
 }
