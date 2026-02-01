@@ -4,7 +4,6 @@ import br.com.adailtonskywalker.sgd.dto.InstallmentRequestData;
 import br.com.adailtonskywalker.sgd.dto.InstallmentResponseData;
 import br.com.adailtonskywalker.sgd.exception.EntityNotFoundException;
 import br.com.adailtonskywalker.sgd.mapper.InstallmentMapper;
-import br.com.adailtonskywalker.sgd.model.Account;
 import br.com.adailtonskywalker.sgd.model.Installment;
 import br.com.adailtonskywalker.sgd.model.InstallmentPlan;
 import br.com.adailtonskywalker.sgd.repository.InstallmentRepository;
@@ -19,14 +18,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class InstallmentService {
-
     private final InstallmentRepository installmentRepository;
     private final InstallmentPlanService installmentPlanService;
     private final InstallmentMapper installmentMapper;
 
-    public List<InstallmentResponseData> getByInstallmentPlan(Account account, UUID installmentPlanId){
-        InstallmentPlan installmentPlan = installmentPlanService.getById(null, installmentPlanId);
+    public List<InstallmentResponseData> getByInstallmentPlan(UUID installmentPlanId){
 
+        InstallmentPlan installmentPlan = installmentPlanService.getById(installmentPlanId);
         List<Installment> installments = installmentRepository.findByInstallmentPlanId(installmentPlan.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Installment"));
 
