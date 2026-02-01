@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "accounts")
@@ -26,15 +24,24 @@ public class Account {
 
     private Boolean active = true;
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    @ManyToMany
+    @JoinTable(
+            name = "user_account",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Transaction> transactions = new ArrayList<>();
-    
+
     @PrePersist
     protected void onCreate() {
         dateCreated = LocalDateTime.now();
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
+        user.getAccounts().add(this);
     }
 }

@@ -5,6 +5,9 @@ import br.com.adailtonskywalker.sgd.dto.AccountResponseData;
 import br.com.adailtonskywalker.sgd.model.Account;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class AccountMapper implements Mapper<Account, AccountResponseData, AccountResponseData> {
     @Override
@@ -20,5 +23,15 @@ public class AccountMapper implements Mapper<Account, AccountResponseData, Accou
                 .balance(entity.getBalance())
                 .dateCreated(entity.getDateCreated())
                 .build();
+    }
+
+    public List<AccountResponseData> toDtoList(List<Account> dtoList) {
+        if (dtoList == null) {
+            return List.of();
+        }
+
+        return dtoList.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 }

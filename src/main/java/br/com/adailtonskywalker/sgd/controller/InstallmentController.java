@@ -3,13 +3,11 @@ package br.com.adailtonskywalker.sgd.controller;
 
 import br.com.adailtonskywalker.sgd.dto.InstallmentResponseData;
 import br.com.adailtonskywalker.sgd.dto.SuccessRequestResponse;
-import br.com.adailtonskywalker.sgd.model.User;
 import br.com.adailtonskywalker.sgd.service.InstallmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,10 +22,9 @@ public class InstallmentController {
     private final InstallmentService service;
 
     @GetMapping("/{installmentPlanId}")
-    public ResponseEntity<SuccessRequestResponse> getByInstallmentPlanId(@PathVariable UUID installmentPlanId,
-                                                                         @AuthenticationPrincipal User user) {
+    public ResponseEntity<SuccessRequestResponse> getByInstallmentPlanId(@PathVariable UUID installmentPlanId) {
 
-        List<InstallmentResponseData> responseData = service.getByInstallmentPlan(user.getAccount(), installmentPlanId);
+        List<InstallmentResponseData> responseData = service.getByInstallmentPlan(installmentPlanId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 SuccessRequestResponse

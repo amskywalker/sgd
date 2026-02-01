@@ -1,10 +1,15 @@
 package br.com.adailtonskywalker.sgd.service;
 
+import br.com.adailtonskywalker.sgd.config.CurrentUserProvider;
+import br.com.adailtonskywalker.sgd.config.JpaUserLoader;
 import br.com.adailtonskywalker.sgd.dto.AccountRequestData;
+import br.com.adailtonskywalker.sgd.dto.AccountResponseData;
 import br.com.adailtonskywalker.sgd.events.TransactionOnBalanceEvent;
 import br.com.adailtonskywalker.sgd.exception.EntityNotFoundException;
+import br.com.adailtonskywalker.sgd.mapper.AccountMapper;
 import br.com.adailtonskywalker.sgd.model.Account;
 import br.com.adailtonskywalker.sgd.model.TransactionType;
+import br.com.adailtonskywalker.sgd.model.User;
 import br.com.adailtonskywalker.sgd.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +17,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -19,8 +25,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
     private final InstallmentService installmentService;
     private final ApplicationEventPublisher publisher;
+    private final CurrentUserProvider userProvider;
+    private final JpaUserLoader userLoader;
 
     public Account findById(UUID uuid) {
         return accountRepository
@@ -28,12 +37,16 @@ public class AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("Account"));
     }
 
-
     @Transactional
-    public Account save(AccountRequestData accountRequestData) {
+    public AccountResponseData save() {
+        Long userId = userProvider.getUserId();
+        User user = userLoader.loadById(userId);
+
         Account account = new Account();
-        account.setUser(accountRequestData.getUser());
-        return accountRepository.save(account);
+        account.addUser(user);
+
+        Account savedAccount = accountRepository.save(account);
+        return accountMapper.toDto(savedAccount);
     }
 
     @Transactional
@@ -80,5 +93,14 @@ public class AccountService {
             throw new EntityNotFoundException("Account");
         }
         return accountRepository.existsById(id);
+    }
+
+    public List<AccountResponseData> getAccountsFromUser(Long userId){
+        List<Account> accounts = accountRepository.findByUsersId(userId);
+        return accountMapper.toDtoList(accounts);
+    }
+
+    public boolean userHasAccount(UUID acountUuid, Long userId) {
+        return accountRepository.userHasAccess(acountUuid, userId);
     }
 }

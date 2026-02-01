@@ -1,5 +1,6 @@
 package br.com.adailtonskywalker.sgd.service;
 
+import br.com.adailtonskywalker.sgd.config.security.AccountContext;
 import br.com.adailtonskywalker.sgd.dto.TransactionRequestData;
 import br.com.adailtonskywalker.sgd.dto.TransactionResponseData;
 import br.com.adailtonskywalker.sgd.events.TransactionCreatedEvent;
@@ -28,13 +29,28 @@ public class TransactionService {
     private final ApplicationEventPublisher publisher;
 
     @Transactional
-    public TransactionResponseData save(Account account, TransactionRequestData transactionRequestData) {
+    public TransactionResponseData save(TransactionRequestData transactionRequestData) {
+        UUID accountId = AccountContext.get();
+
+        Account account = new Account();
+        account.setId(accountId);
+
         Transaction transaction = transactionMapper.toEntity(transactionRequestData);
         transaction.setAccount(account);
+
         Transaction savedTransaction = transactionRepository.save(transaction);
-        publisher.publishEvent(new TransactionCreatedEvent(savedTransaction.getId(), account.getId(), savedTransaction.getAmount()));
+
+        publisher.publishEvent(
+                new TransactionCreatedEvent(
+                        savedTransaction.getId(),
+                        accountId,
+                        savedTransaction.getAmount()
+                )
+        );
+
         return transactionMapper.toDto(savedTransaction);
     }
+
 
     @Transactional
     public TransactionResponseData update(Account account, UUID transactionId, TransactionRequestData transactionRequestData) {
@@ -57,20 +73,28 @@ public class TransactionService {
         transactionRepository.save(transation);
     }
 
-    public Transaction getOwnedTransaction(Account account, UUID transactionId) {
+    public Transaction getOwnedTransaction(UUID transactionId) {
+        UUID accountId = AccountContext.get();
+
         return transactionRepository
-                .findByIdAndAccountId(transactionId, account.getId())
+                .findByIdAndAccountId(transactionId, accountId)
                 .orElseThrow(UnauthorizedActionException::new);
     }
 
-    public List<TransactionResponseData> index(Account account) {
-        List<Transaction> transactions = transactionRepository.findAllByAccountId(account.getId());
-        return transactionMapper.toDtoList(transactions);
+    public List<TransactionResponseData> index() {
+        UUID accountId = AccountContext.get();
+        return transactionRepository.findAllByAccountId(accountId)
+                .stream()
+                .map(transactionMapper::toDto)
+                .toList();
     }
 
-    public TransactionResponseData getByUUID(Account account, UUID uuid) {
-        Transaction transaction = transactionRepository.findByIdAndAccountId(uuid, account.getId())
-                .orElseThrow(() -> new AccessDeniedException("Not allowed"));
+    public TransactionResponseData getByUUID(UUID uuid) {
+        UUID accountId = AccountContext.get();
+
+        Transaction transaction = transactionRepository
+                .findByIdAndAccountId(uuid, accountId)
+                .orElseThrow(() -> new EntityNotFoundException("Transaction"));
 
         return transactionMapper.toDto(transaction);
     }
